@@ -1,0 +1,12 @@
+{
+    "extends": ["airbnb-base", "prettier"],
+    "plugins": ["mocha"],
+    "rules": {
+        "mocha/no-exclusive-tests": "error"
+    },
+    "env": { "mocha": true, "node": true },
+    "globals": {
+        "expect": true,
+        "sinon": true
+    }
+}
