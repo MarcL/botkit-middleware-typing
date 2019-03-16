@@ -129,4 +129,15 @@ describe('when typing is supported by the bot platform', () => {
             givenTimeoutDelay
         );
     });
+
+    test('should call next after timeout', () => {
+        const fakeMessage = 'fake message';
+
+        const sendMiddleware = typingMiddleware();
+
+        sendMiddleware(fakeBot, fakeMessage, spyNext);
+        jest.runAllTimers();
+
+        expect(spyNext).toHaveBeenCalledTimes(1);
+    });
 });
