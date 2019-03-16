@@ -43,3 +43,6 @@ config.js
 
 # Credentials file for firebase
 *-firebase-adminsdk-*.json
+
+# Ignore VSCode local settings
+.vscode

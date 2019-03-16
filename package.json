@@ -5,14 +5,14 @@
     "main": "src/index.js",
     "scripts": {
         "lint": "eslint .",
-        "test": "echo \"Error: no test specified\" && exit 1"
+        "test": "jest",
+        "test:coverage": "jest --collect-coverage"
     },
     "keywords": [
         "botkit",
         "chatbot",
         "typing",
-        "Messenger",
-        "Slack"
+        "Messenger"
     ],
     "author": "Marc Littlemore <marc.littlemore@gmail.com> (https://marclittlemore.com)",
     "license": "MIT",
@@ -21,11 +21,32 @@
         "url": "git@github.com:MarcL/botkit-middleware-typing.git"
     },
     "devDependencies": {
+        "@commitlint/cli": "^7.5.2",
+        "@commitlint/config-conventional": "^7.5.0",
         "eslint": "^5.9.0",
         "eslint-config-airbnb-base": "^13.1.0",
         "eslint-config-prettier": "^3.3.0",
         "eslint-plugin-import": "^2.14.0",
         "eslint-plugin-mocha": "^5.2.0",
+        "husky": "^1.3.1",
+        "jest": "^24.5.0",
+        "lint-staged": "^8.1.5",
         "prettier": "^1.15.2"
+    },
+    "husky": {
+        "hooks": {
+            "commit-msg": "commitlint -E HUSKY_GIT_PARAMS",
+            "pre-commit": "yarn lint && lint-staged",
+            "pre-push": "yarn test"
+        }
+    },
+    "lint-staged": {
+        "*.{js,json,md}": [
+            "prettier --write",
+            "git add"
+        ]
+    },
+    "engines": {
+        "node": "8.x"
     }
 }
