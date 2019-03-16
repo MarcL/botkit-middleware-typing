@@ -1,51 +1,30 @@
-const AVERAGE_WORDS_PER_MINUTE = 85;
-const AVERAGE_CHARACTERS_PER_MINUTE = AVERAGE_WORDS_PER_MINUTE * 7;
-const DEFAULT_ATTACHMENT_TEXT_LENGTH = 80;
+const typingDelay = require('./typingDelay');
 
-const calculateTypingDelay = response => {
-    let textLength;
-
-    if (typeof response === 'string') {
-        textLength = response.length;
-    } else if (response.text) {
-        textLength = response.text.length;
-    } else {
-        textLength = DEFAULT_ATTACHMENT_TEXT_LENGTH;
-    }
-
-    return Math.min(
-        Math.floor(textLength / (AVERAGE_CHARACTERS_PER_MINUTE / 60)) * 1000,
-        5000
-    );
-};
-
-const typingIndicatorMessage = (bot, message) => ({
+const typingIndicatorMessage = message => ({
     recipient: { id: message.to },
     channel: message.channel,
     sender_action: 'typing_on',
 });
+
 const botSupportsTyping = bot => bot.startTyping;
 
+// Currently only supports Facebook response
 const isTypingMessage = message =>
     message.sender_action && message.sender_action === 'typing_on';
 
-const botkitMiddlewareTyping = (bot, message, next) => {
-    const send = () => {
-        console.log('Bot typing middleware');
-        if (botSupportsTyping(bot) && !isTypingMessage(message)) {
-            const typingIndicator = typingIndicatorMessage(bot, message);
-            const typingDelay = calculateTypingDelay(message);
-            bot.send(typingIndicator, () => {
-                setTimeout(() => next(), typingDelay);
-            });
-        } else {
-            next();
-        }
-    };
+const botkitMiddlewareTyping = (config = {}) => (bot, message, next) => {
+    const { maximumTypingDelayMs, typingDelayMs } = config;
 
-    return {
-        send,
-    };
+    if (botSupportsTyping(bot) && !isTypingMessage(message)) {
+        const typingDelayMilliseconds =
+            typingDelayMs || typingDelay(message, maximumTypingDelayMs);
+
+        bot.send(typingIndicatorMessage(message), () => {
+            setTimeout(() => next(), typingDelayMilliseconds);
+        });
+    } else {
+        next();
+    }
 };
 
 module.exports = botkitMiddlewareTyping;
