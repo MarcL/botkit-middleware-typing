@@ -103,7 +103,7 @@ describe('when typing is supported by the bot platform', () => {
         const givenTimeoutDelay = 10;
 
         const sendMiddleware = typingMiddleware({
-            maximumTimeoutDelay: givenTimeoutDelay,
+            maximumTypingDelayMs: givenTimeoutDelay,
         });
 
         sendMiddleware(fakeBot, fakeMessage, spyNext);
@@ -119,7 +119,7 @@ describe('when typing is supported by the bot platform', () => {
         const givenTimeoutDelay = 10;
 
         const sendMiddleware = typingMiddleware({
-            timeoutDelay: givenTimeoutDelay,
+            typingDelayMs: givenTimeoutDelay,
         });
 
         sendMiddleware(fakeBot, fakeMessage, spyNext);

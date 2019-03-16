@@ -13,11 +13,11 @@ const isTypingMessage = message =>
     message.sender_action && message.sender_action === 'typing_on';
 
 const botkitMiddlewareTyping = (config = {}) => (bot, message, next) => {
-    const { maximumTimeoutDelay, timeoutDelay } = config;
+    const { maximumTypingDelayMs, typingDelayMs } = config;
 
     if (botSupportsTyping(bot) && !isTypingMessage(message)) {
         const typingDelayMilliseconds =
-            timeoutDelay || typingDelay(message, maximumTimeoutDelay);
+            typingDelayMs || typingDelay(message, maximumTypingDelayMs);
 
         bot.send(typingIndicatorMessage(message), () => {
             setTimeout(() => next(), typingDelayMilliseconds);
