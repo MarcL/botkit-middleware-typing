@@ -1,23 +1,4 @@
-const AVERAGE_WORDS_PER_MINUTE = 85;
-const AVERAGE_CHARACTERS_PER_MINUTE = AVERAGE_WORDS_PER_MINUTE * 7;
-const DEFAULT_ATTACHMENT_TEXT_LENGTH = 80;
-
-const calculateTypingDelay = response => {
-    let textLength;
-
-    if (typeof response === 'string') {
-        textLength = response.length;
-    } else if (response.text) {
-        textLength = response.text.length;
-    } else {
-        textLength = DEFAULT_ATTACHMENT_TEXT_LENGTH;
-    }
-
-    return Math.min(
-        Math.floor(textLength / (AVERAGE_CHARACTERS_PER_MINUTE / 60)) * 1000,
-        5000
-    );
-};
+const typingDelay = require('./typingDelay');
 
 const typingIndicatorMessage = message => ({
     recipient: { id: message.to },
@@ -33,8 +14,7 @@ const isTypingMessage = message =>
 
 const botkitMiddlewareTyping = (config = {}) => (bot, message, next) => {
     if (botSupportsTyping(bot) && !isTypingMessage(message)) {
-        //         const typingIndicator = typingIndicatorMessage(message);
-        //         const typingDelay = calculateTypingDelay(message);
+        // const typingDelay = calculateTypingDelay(message);
         bot.send(typingIndicatorMessage(message), () => {
             setTimeout(() => next(), typingDelay);
         });
