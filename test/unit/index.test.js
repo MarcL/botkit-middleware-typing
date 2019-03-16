@@ -30,8 +30,10 @@ describe('when typing is supported by the bot platform', () => {
     let fakeBot;
 
     beforeEach(() => {
+        jest.useFakeTimers();
+
         spyNext = jest.fn();
-        spyBotSend = jest.fn();
+        spyBotSend = jest.fn((message, callback) => callback());
 
         fakeBot = {
             startTyping: true,
@@ -83,6 +85,48 @@ describe('when typing is supported by the bot platform', () => {
         expect(spyBotSend).toHaveBeenCalledWith(
             expectedMessage,
             expect.any(Function)
+        );
+    });
+
+    test('should set expected timeout delay', () => {
+        const fakeMessage = 'fake message';
+
+        const sendMiddleware = typingMiddleware();
+
+        sendMiddleware(fakeBot, fakeMessage, spyNext);
+
+        expect(setTimeout).toHaveBeenCalledWith(expect.any(Function), 1210);
+    });
+
+    test('should set expected timeout delay when config.maximumTimeoutDelay is set', () => {
+        const fakeMessage = 'fake message';
+        const givenTimeoutDelay = 10;
+
+        const sendMiddleware = typingMiddleware({
+            maximumTimeoutDelay: givenTimeoutDelay,
+        });
+
+        sendMiddleware(fakeBot, fakeMessage, spyNext);
+
+        expect(setTimeout).toHaveBeenCalledWith(
+            expect.any(Function),
+            givenTimeoutDelay
+        );
+    });
+
+    test('should set expected timeout delay when config.timeoutDelay is set', () => {
+        const fakeMessage = 'fake message';
+        const givenTimeoutDelay = 10;
+
+        const sendMiddleware = typingMiddleware({
+            timeoutDelay: givenTimeoutDelay,
+        });
+
+        sendMiddleware(fakeBot, fakeMessage, spyNext);
+
+        expect(setTimeout).toHaveBeenCalledWith(
+            expect.any(Function),
+            givenTimeoutDelay
         );
     });
 });
