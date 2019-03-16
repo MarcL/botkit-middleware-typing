@@ -1,10 +1,8 @@
 {
-    "extends": ["airbnb-base", "prettier"],
-    "plugins": ["mocha"],
-    "rules": {
-        "mocha/no-exclusive-tests": "error"
-    },
-    "env": { "mocha": true, "node": true },
+    "extends": ["airbnb-base", "prettier", "plugin:jest/recommended"],
+    "plugins": ["jest"],
+    "rules": {},
+    "env": { "jest/globals": true, "node": true },
     "globals": {
         "expect": true,
         "sinon": true
